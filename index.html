@@ -1,0 +1,41 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Construction Intelligence Platform – Demo</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--tx:#1c2430;--mu:#5b6573;--bd:#d9dee5;--ac:#e8710a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14181e;--card:#1e242c;--tx:#e8ecf1;--mu:#9aa5b3;--bd:#323a45}}
+:root[data-theme="dark"]{--bg:#14181e;--card:#1e242c;--tx:#e8ecf1;--mu:#9aa5b3;--bd:#323a45}
+html,body{margin:0}body{background:var(--bg);color:var(--tx);font-family:system-ui,sans-serif}
+.app{max-width:820px;margin:auto;padding:18px}h1{margin:0;font-size:22px}p.s{color:var(--mu);margin:4px 0 0}
+.note{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);padding:10px 12px;border-radius:8px;margin:14px 0;font-size:13px;color:var(--mu)}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}nav button{padding:8px 12px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;cursor:pointer}
+nav .on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:14px}
+label{display:block;margin:10px 0;font-size:14px}input{display:block;width:100%;box-sizing:border-box;padding:9px;margin-top:4px;border:1px solid var(--bd);border-radius:6px;background:var(--bg);color:var(--tx)}
+.go{background:var(--ac);color:#fff;border:0;padding:10px 18px;border-radius:8px;cursor:pointer}
+dt{font-weight:600;text-transform:capitalize;margin-top:8px}dd{margin:0 0 0 8px}ul{margin:4px 0;padding-left:20px}
+</style></head><body><div class="app">
+<h1>🏗️ AI-Powered Multimodal Construction Intelligence Platform</h1>
+<p class="s">React.js · FastAPI · Multimodal LLM</p>
+<div class="note">Demo mode: this page shows sample outputs in the same JSON contract the real FastAPI backend returns. The full source (live AI backend) is on GitHub.</div>
+<nav id="nav"></nav><div class="card"><h2 id="t" style="margin-top:0"></h2><div id="f"></div><button class="go" id="go">Analyze</button></div>
+<div class="card" id="o" hidden><h3 style="margin-top:0">Result</h3><div id="r"></div></div></div>
+<script>
+const F=[
+{id:"Safety Monitoring",img:1,fields:["Site notes (optional)"],res:{risk_level:"medium",violations:[{issue:"Worker on scaffold without helmet",severity:"high",fix:"Enforce PPE check at entry"},{issue:"Loose rebar near walkway",severity:"medium",fix:"Cap and stack rebar"}],summary:"Two violations found; fix helmet compliance first."}},
+{id:"Crack Detection",img:1,fields:["Location of crack"],res:{crack_type:"Diagonal shear crack",severity:"moderate",probable_causes:["Differential settlement","Overloading"],repair_steps:["Monitor with crack gauge for 2 weeks","Epoxy injection","Structural review"],urgent:false}},
+{id:"Real Estate Valuation",fields:["City","Area (sq ft)","Bedrooms","Age (years)"],res:{estimated_value_inr:6800000,price_per_sqft_inr:5667,range_low_inr:6200000,range_high_inr:7400000,factors:["Locality demand","Building age","Nearby infrastructure"],summary:"Estimated value is fair for the locality."}},
+{id:"Project Planning",fields:["Project","Budget (INR)","Deadline (weeks)"],res:{phases:[{name:"Foundation",duration_weeks:6,tasks:["Excavation","PCC","Footings"],budget_percent:20},{name:"Structure",duration_weeks:14,tasks:["Columns","Slabs","Brickwork"],budget_percent:45},{name:"Finishing",duration_weeks:10,tasks:["Plaster","Flooring","Painting"],budget_percent:35}],total_weeks:30,risks:["Monsoon delay","Material price rise"]}},
+{id:"Daily Site Assistant",fields:["Current stage","Workers on site"],res:{priorities:["Complete slab shuttering","Concrete order confirmation"],checklist:["Toolbox talk","Check rebar cover","Inspect formwork"],safety_reminders:["Harnesses at height","Barricade open edges"],summary:"Focus on formwork readiness today."}},
+{id:"Weather Advisory",fields:["Site city","Planned activity"],res:{overall:"caution",activities_ok:["Interior finishing","Rebar tying"],activities_avoid:["Concrete pouring (rain expected)","Crane lifts in high wind"],precautions:["Cover cement bags","Keep dewatering pump ready"],summary:"Reschedule pouring to a dry window."}},
+{id:"Knowledge Assistant",fields:["Ask a construction question"],res:{answer:"Cube strength for M25 is tested at 28 days; 7-day strength is about 65% of target.",key_points:["Cure continuously","Test 3 cubes per sample"],references:["IS 456:2000","IS 516"]}}];
+const $=s=>document.querySelector(s);let cur=0;
+function R(d){if(Array.isArray(d))return"<ul>"+d.map(x=>"<li>"+R(x)+"</li>").join("")+"</ul>";
+ if(d&&typeof d=="object")return"<dl>"+Object.entries(d).map(([k,v])=>"<div><dt>"+k.replace(/_/g," ")+"</dt><dd>"+R(v)+"</dd></div>").join("")+"</dl>";return String(d)}
+function show(i){cur=i;const f=F[i];$("#t").textContent=f.id;$("#o").hidden=true;
+ $("#f").innerHTML=(f.img?"<label>Upload site image<input type=file accept=image/*></label>":"")+f.fields.map(x=>"<label>"+x+"<input type=text></label>").join("");
+ $("#nav").innerHTML=F.map((x,j)=>"<button class='"+(j==i?"on":"")+"' data-i='"+j+"'>"+x.id+"</button>").join("")}
+$("#nav").onclick=e=>{if(e.target.dataset.i)show(+e.target.dataset.i)};
+$("#go").onclick=()=>{$("#r").innerHTML=R(F[cur].res);$("#o").hidden=false};
+show(0);
+</script></body></html>
